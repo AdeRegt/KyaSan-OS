@@ -66,6 +66,7 @@ void kernel_main(){
     int i;
     for(i = 0 ; i < 100 ; i++){printc(location[i]);}
     prints("DONE");
+    for(;;);
 }
 
 void cdrRead(long lba,char count,char* locationx){
@@ -203,9 +204,11 @@ unsigned char getc(){
 extern void irq_defaulte();
 extern void irq_error();
 extern void irq_hdd();
+
 void hdd(){
     vidpnt[0] = 'X';
     vidpnt[1] = 0x75;
+    
 }
 #define IDT_SIZE 256
 struct idt_entry {
@@ -249,7 +252,7 @@ void lidt() {
     //for(i = 30 ; i < 33 ; i++){//35
     //setInterrupt(32, (unsigned long) &irq_timer);
     //}
-    //setInterrupt(32, (unsigned long) &startToYield);
+//    setInterrupt(32, (unsigned long) &irq_timer);
     setInterrupt(32+14, (unsigned long) &irq_hdd);
     idtp.limit = (sizeof (struct idt_entry) * IDT_SIZE) - 1;
     idtp.base = (unsigned int) &idt;

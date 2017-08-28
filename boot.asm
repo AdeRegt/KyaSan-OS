@@ -16,37 +16,32 @@ stack_bottom:
 resb 16384
 stack_top:
 
+stack2_bottom:
+resb 26384
+stack2_top:
+
 section .text
-global _start:function (_start.end - _start)
+global _start:function (_end - _start)
 
 _start:
-mov esp,stack_top
 
+mov esp,stack_top
+mov ebp,stack_bottom
 extern kernel_main
 call kernel_main
 cli
 hlt
-.end:
+_end:
 
 %macro interrupt 1
 global irq_%1
 extern %1
 irq_%1:
-    pusha
-    push ds
-    push es
-    push fs
-    push gs
-    push eax
+    pushad
     call %1
     mov al,0x20
     out 0x20,al
-    pop eax
-    pop gs
-    pop fs
-    pop es
-    pop ds
-    popa
+    popad
     iret
 %endmacro
 
